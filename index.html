@@ -156,7 +156,7 @@
                 
 
                 <!-- Open Comment Popup Button -->
-                <a id="open-comment-popup">what’s up? </button></a>
+                <a id="open-comment-popup">QNA? </button></a>
 
             </div>
         </div>
@@ -167,7 +167,7 @@
 <div id="comment-popup" class="popup">
     <div class="popup-content">
         <span id="close-popup" class="close">&times;</span>
-        <h3>Comments</h3>
+        <h2>QNA❓</h2> <hr>
         <div id="comments"></div>
         <input type="text" id="comment-input" placeholder="Write a comment..." />
         <button id="submit-comment">Post</button>
@@ -192,11 +192,11 @@
 /* Popup Content */
 .popup-content {
     background: white;
-    padding: 20px;
+    padding: 10px;
     border-radius: 10px;
     text-align: center;
     width: 90%;
-    max-width: 400px;
+    max-width: 600px;
     position: relative;
     animation: fadeIn 0.3s ease-in-out;
 }
@@ -206,7 +206,7 @@
     position: absolute;
     top: 10px;
     right: 20px;
-    font-size: 38px;
+    font-size: 48px;
     color: red;
     font-weight: bold;
     cursor: pointer;
@@ -218,7 +218,7 @@
 
 /* Comments Section */
 #comments {
-    max-height: 350px;
+    max-height: 550px;
     overflow-y: auto;
     text-align: left;
     margin-bottom: 15px;
@@ -286,9 +286,10 @@
 }
 /* Replies Section */
 .reply-box {
-    background: #e9ecef;
-    padding: 8px;
-    border-radius: 5px;
+    background: #fff;
+    padding: 4px;
+    font-size:11px;
+    border-radius: 15px;
     margin-left: 20px;
     margin-top: 5px;
     border-left: 4px solid #28a745;
