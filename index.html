@@ -9,10 +9,10 @@
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-        import { getDatabase, ref, set, get, onValue, push, runTransaction } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+        import { getDatabase, ref, push, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
 
-        // Firebase configuration
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCGKbu0R4inHCCNo6_uIiD30O3xYt-NLqU",
             authDomain: "writer-845e1.firebaseapp.com",
@@ -27,8 +27,6 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-
-        // Initialize Analytics (only for production)
         if (window.location.hostname !== "localhost") {
             getAnalytics(app);
         }
@@ -43,29 +41,15 @@
             const openPopup = document.getElementById("open-comment-popup");
             const closePopup = document.getElementById("close-popup");
 
-            // Open comment popup
-            openPopup.addEventListener("click", () => {
-                commentPopup.style.display = "block";
-            });
+            // Open and Close Popup
+            openPopup.addEventListener("click", () => { commentPopup.style.display = "block"; });
+            closePopup.addEventListener("click", () => { commentPopup.style.display = "none"; });
 
-            // Close comment popup
-            closePopup.addEventListener("click", () => {
-                commentPopup.style.display = "none";
-            });
+            // Fetch Like Count
+            onValue(ref(db, "profile/loveCount"), (snapshot) => { loveCount.innerText = snapshot.val() || 0; });
 
-            // Fetch and update love count in real-time
-            onValue(ref(db, "profile/loveCount"), (snapshot) => {
-                loveCount.innerText = snapshot.val() || 0;
-            });
-
-            // Prevent multiple likes
-            get(ref(db, "profile/loveCount")).then((snapshot) => {
-                if (localStorage.getItem("liked")) {
-                    loveIcon.classList.add("fas");
-                }
-            });
-
-            // Like (Love Reaction) button
+            // Prevent Multiple Likes
+            if (localStorage.getItem("liked")) { loveIcon.classList.add("fas"); }
             loveIcon.addEventListener("click", () => {
                 if (!localStorage.getItem("liked")) {
                     runTransaction(ref(db, "profile/loveCount"), (count) => (count || 0) + 1);
@@ -74,45 +58,56 @@
                 }
             });
 
-            // Fetch and display comments in real-time
+            // Fetch & Display Comments with Replies
             onValue(ref(db, "profile/comments"), (snapshot) => {
-                commentsDiv.innerHTML = ""; // Clear previous comments
+                commentsDiv.innerHTML = "";
                 snapshot.forEach((childSnapshot) => {
                     let commentData = childSnapshot.val();
+                    let commentId = childSnapshot.key;
+
                     let commentElement = document.createElement("div");
                     commentElement.classList.add("comment-box");
                     commentElement.innerHTML = `
-                        <strong>${commentData.name}</strong> <span class="comment-date">${commentData.date}</span>
+                        <strong>${commentData.name}</strong> 
+                        <span class="comment-date">${commentData.date}</span>
                         <p>${commentData.comment}</p>
+                        <div class="reply-section" id="replies-${commentId}"></div>
                     `;
+
                     commentsDiv.prepend(commentElement);
+
+                    // Fetch Replies
+                    onValue(ref(db, `profile/comments/${commentId}/replies`), (replySnapshot) => {
+                        const repliesDiv = document.getElementById(`replies-${commentId}`);
+                        repliesDiv.innerHTML = "";
+                        replySnapshot.forEach((replyChild) => {
+                            let replyData = replyChild.val();
+                            let replyElement = document.createElement("div");
+                            replyElement.classList.add("reply-box");
+                            replyElement.innerHTML = `
+                                <strong><b>Mehedi Al Hasan Sawon <img src="verify.png" width="12px"> </strong> <span class="comment-date">${replyData.date}</span>
+                                <p>${replyData.reply}</p>
+                            `;
+                            repliesDiv.appendChild(replyElement);
+                        });
+                    });
                 });
             });
 
-            // Post a comment
+            // Post Comment
             submitComment.addEventListener("click", () => {
                 let commentText = commentInput.value.trim();
                 if (commentText) {
                     let userName = localStorage.getItem("userName") || prompt("Enter your name:");
-                    if (!userName) return; // Stop if no name entered
-                    localStorage.setItem("userName", userName); // Store name for future use
-                    
-                    let commentData = {
-                        name: userName,
-                        comment: commentText,
-                        date: new Date().toLocaleString() // Format: "1/29/2025, 10:45:30 PM"
-                    };
+                    if (!userName) return;
+                    localStorage.setItem("userName", userName);
 
+                    let commentData = { name: userName, comment: commentText, date: new Date().toLocaleString() };
                     push(ref(db, "profile/comments"), commentData);
-                    commentInput.value = ""; // Clear input field
+                    commentInput.value = "";
                 }
             });
         });
-        window.onclick = function(event) {
-    if (event.target === popup) {
-        popup.style.display = "none";
-    }
-}
 
     </script>
 </head>
@@ -288,6 +283,18 @@
 @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.9); }
     to { opacity: 1; transform: scale(1); }
+}
+/* Replies Section */
+.reply-box {
+    background: #e9ecef;
+    padding: 8px;
+    border-radius: 5px;
+    margin-left: 20px;
+    margin-top: 5px;
+    border-left: 4px solid #28a745;
+}
+.reply-box strong {
+    color: #28a745;
 }
 </style>
 
