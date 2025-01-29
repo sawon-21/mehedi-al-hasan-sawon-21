@@ -123,17 +123,66 @@
                 </div>
 <div class="ntc">
   <table>
-    <th>➤</th>
-    <th></th>
-    <th><marquee>The website is being tested to identify errors.  </marquee></th>
-  <br> <br>
+    <tr>
+      <th class="icon-cell">
+        <i class="fas fa-bell"></i>
+      </th>
+      <th></th>
+      <th class="marquee-cell">
+        <marquee id="marqueeText"><p style="color:red">⚠ Please check your internet connection and try again ⚠</p></marquee>
+      </th>
+    </tr>
   </table>
 </div>
-                <!-- Profile-Picture -->
+
+<!-- Firebase v9+ Modular Script -->
+<script type="module">
+  // Import Firebase SDK
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+  // Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCGKbu0R4inHCCNo6_uIiD30O3xYt-NLqU",
+    authDomain: "writer-845e1.firebaseapp.com",
+    databaseURL: "https://writer-845e1-default-rtdb.firebaseio.com",
+    projectId: "writer-845e1",
+    storageBucket: "writer-845e1.appspot.com",
+    messagingSenderId: "852313784855",
+    appId: "1:852313784855:web:79c1eeb33b2120d4bf5252",
+    measurementId: "G-8YNXC75H5Q"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+
+  // Reference to marqueeText node in Firebase
+  const marqueeElement = document.getElementById('marqueeText');
+  const marqueeRef = ref(database, 'marqueeText');
+
+  // Listen for real-time updates
+  onValue(marqueeRef, (snapshot) => {
+    const newText = snapshot.val();
+    if (newText) {
+      marqueeElement.textContent = newText;  // Update the marquee text dynamically
+    }
+  });
+</script>
+
+
+
+    <!-- Profile-Picture -->
                 <img src="Mehedi Al Hasan Sawon.jpg" alt="profile pics">
                 <h2>Mehedi Al Hasan Sawon </h2>
                 <h4>Lead Developer</h4>
-                <p>প্রত্যেক প্রাণীকেই মৃত্যুর স্বাদ গ্রহণ করতে হবে এবং তোমাদের সকলকে (তোমাদের কর্মের) পুরোপুরি প্রতিদান কিয়ামতের দিনই দেওয়া হবে। অতঃপর যাকেই জাহান্নাম থেকে দূরে সরিয়ে দেওয়া হবে ও জান্নাতে প্রবেশ করিয়ে দেওয়া হবে, সে-ই প্রকৃত অর্থে সফলকাম হবে।  <br> সূরা আ-লু ইমরান ( আয়াত নং - ১৮৫ এর তাফসীর )</p>
+                <p>كل نفس ذائقة الموت
+<br>প্রত্যেক প্রাণীকেই মৃত্যুর স্বাদ গ্রহণ করতে হবে<br>
+(সুরা আলে ইমরান; ৩:১৮৫)
+<br>
+🩸 BG: B+
+<br>
+</p>
 
                 <!-- Social Icons -->
                 <div class="icons">
@@ -141,23 +190,25 @@
   <i class="fab fa-facebook-f"></i>
 </a>
 <a href="https://x.com/MehediAlHasan07" target="_blank">
-  <i class="fab fa-twitter"></i>
+ <i class="fas fa-times"></i> 
 </a>
-<a href="https://www.instagram.com/mehedi_al_hasan_sawon_21?igsh=MWVxYzJpcWZ2bHU1cQ==" target="_blank">
-  <i class="fab fa-instagram"></i>
+
+<a href="https://t.me/Sawon_unofficial"><i class="fab fa-telegram"></i>
 </a>
 <a href="https://www.linkedin.com/in/mehedialhasansawon21" target="_blank">
   <i class="fab fa-linkedin-in"></i>
 </a>
-
+<a href="https://www.instagram.com/mehedi_al_hasan_sawon_21?igsh=MWVxYzJpcWZ2bHU1cQ==" target="_blank">
+  <i class="fab fa-instagram"></i>
+</a>
                 </div>
 
                 <!-- Profile Button -->
                 
 
                 <!-- Open Comment Popup Button -->
-                <a id="open-comment-popup">QNA? </button></a>
-
+                <a id="open-comment-popup">QNA<i class="fas fa-question"></i></button></a>
+<br>
             </div>
         </div>
     </div>
@@ -168,7 +219,7 @@
     <div class="popup-content">
         <span id="close-popup" class="close">&times;</span>
         <h2>QNA❓</h2> <hr>
-        <div id="comments"></div>
+        <div id="comments"><p style="color:red">⚠ Please check your internet connection and try again ⚠</p> </div>
         <input type="text" id="comment-input" placeholder="Write a comment..." />
         <button id="submit-comment">Post</button>
     </div>

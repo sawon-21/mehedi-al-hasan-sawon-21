@@ -6,6 +6,7 @@
     <title>Admin Panel - Manage Comments</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
@@ -29,6 +30,9 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             const commentsDiv = document.getElementById("comments");
+            const marqueeElement = document.getElementById("marqueeText");
+            const marqueeInput = document.getElementById("marqueeInput");
+            const marqueeUpdateBtn = document.getElementById("updateMarquee");
 
             // Fetch and display comments in real-time
             onValue(ref(db, "profile/comments"), (snapshot) => {
@@ -88,73 +92,234 @@
                     });
                 });
             });
+
+            // Load and listen for changes in marquee text
+            const marqueeRef = ref(db, "marqueeText");
+            onValue(marqueeRef, (snapshot) => {
+                const newText = snapshot.val();
+                marqueeElement.textContent = newText || "Add HeadLine";
+            });
+
+            // Update Marquee Text
+            marqueeUpdateBtn.addEventListener("click", () => {
+                const newText = marqueeInput.value.trim();
+                if (newText) {
+                    set(marqueeRef, newText)
+                        .then(() => alert("HeadLine updated successfully!"))
+                        .catch((error) => alert("Error updating marquee text: " + error.message));
+                } else {
+                    alert("Please enter new HeadLine!");
+                }
+            });
         });
+        document.getElementById("marqueeInput").addEventListener("input", function () {
+    document.getElementById("previewMarquee").textContent = this.value || "Your text will appear here...";
+});
     </script>
 </head>
 <body>
 
 <div class="admin-container">
-    <h2>Admin Panel - Manage Comments</h2>
+    <h1 style="color:brown">Admin Panel - Manage Comments</h1>
+
+<div class="marquee-container">
+    <h3>Update HeadLine</h3>
+    
+    <!-- Live Preview Box -->
+    <div class="preview-box">
+        <marquee id="previewMarquee">Your text will appear here...</marquee>
+    </div>
+    
+    <input type="text" id="marqueeInput" placeholder="Enter new HeadLine">
+    <button id="updateMarquee">Update</button>
+</div>
+
+    <!-- Display Marquee -->
+    <p style="background-color:yellow"><i><b>Latest :</b></i></p>
+    <div class="marquee-display"> <hr>
+        <marquee id="marqueeText">Loading...</marquee>
+    </div>
+<hr> <br>
+    <h3>Manage Comments</h3>
     <div id="comments"></div>
 </div>
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f8f9fa;
-        padding: 20px;
-    }
-    .admin-container {
-        max-width: 600px;
-        margin: 0 auto;
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .comment-box {
-        background: #f4f4f4;
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 15px;
-        border-left: 4px solid #007BFF;
-    }
-    .comment-box strong {
-        color: #007BFF;
-    }
-    .comment-date {
-        font-size: 12px;
-        color: gray;
-        margin-left: 10px;
-    }
-    .reply-box {
-        background: #e9ecef;
-        padding: 8px;
-        border-radius: 5px;
-        margin-left: 20px;
-        margin-top: 5px;
-        border-left: 4px solid #28a745;
-    }
-    .delete-btn, .reply-btn {
-        background: #dc3545;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        margin-top: 5px;
-        margin-right: 5px;
-        border-radius: 5px;
-        font-size: 14px;
-    }
-    .reply-btn {
-        background: #007BFF;
-    }
-    .delete-btn:hover {
-        background: #c82333;
-    }
-    .reply-btn:hover {
-        background: #0056b3;
-    }
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+
+
+body {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #fff;
+    padding: 20px;
+    
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: black;
+}
+
+/* Admin Panel Container */
+
+/* Section Titles */
+ h3 {
+    color: #ffcc;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 15px;
+}
+
+/* Marquee Section */
+.marquee-container {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Live Preview Box */
+.preview-box {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: 0.3s;
+}
+
+.preview-box:hover {
+    transform: scale(1.02);
+}
+
+marquee {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffcc00;
+}
+
+/* Input Field */
+#marqueeInput {
+    width: 80%;
+    padding: 10px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    color: #111;
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+
+#marqueeInput:focus {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Button */
+#updateMarquee {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+#updateMarquee:hover {
+    background: linear-gradient(135deg, #218838, #28a745);
+    transform: scale(1.05);
+}
+/* Buttons */
+button {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #ff4b2b, #ff416c);
+    transform: scale(1.05);
+}
+
+/* Comments Section */
+.comment-box {
+    background: rgba(230, 255, 255, 0.2);
+    padding: 5px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-left: 5px solid #ffcc00;
+    transition: 0.3s;
+    display: flex;
+    font-weight: bold;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.comment-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+.comment-box p{
+  font-size: 25px;
+  color: #fff;
+}
+.comment-box strong {
+    color: #ffcc00;
+}
+
+/* Comment Date */
+.comment-date {
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-left: 10px;
+}
+
+/* Replies */
+.reply-box {
+    background: #8888;
+    padding: 4px;
+    border-radius: 8px;
+    margin-left: 20px;
+    margin-top: 10px;
+    border-left: 4px solid #28a745;
+}
+
+/* Buttons for Delete & Reply */
+.delete-btn, .reply-btn {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    transition: 0.3s;
+    margin-top: 5px;
+}
+
+.delete-btn {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+}
+
+.delete-btn:hover {
+    background: linear-gradient(135deg, #ff4b2b, #ff416c);
+}
+
+.reply-btn {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.reply-btn:hover {
+    background: linear-gradient(135deg, #0056b3, #007bff);
+}
+
+/* Responsive Design */
+
 </style>
 
 </body>
