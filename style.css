@@ -120,6 +120,16 @@ body {
   font-size: 21px;
   cursor: pointer;
 } 
+.visitor-count {
+  color: #888;
+  position: absolute;
+  top: 5px;
+  left: 290px;  /* Move it to the right */
+   /* Adjust for spacing */
+  font-size: 13px;
+  cursor: pointer;
+}
+
 
 /* Profile Picture */
 .profile-card img {
